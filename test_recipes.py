@@ -48,3 +48,47 @@ def test_recipe_scale_error():
 def test_recipe_len():
     r = Recipe("Кекс", [Ingredient("Мука", 200, "г"), Ingredient("Куриная Грудка", 52, "г")])
     assert len(r) == 2
+
+
+
+
+def test_add_recipe():
+    sl = ShoppingList()
+    sl.add_recipe(Recipe("Кекс", [Ingredient("Мука", 200, "г")]), 2)
+    assert len(sl._items) == 1
+
+def test_add_recipe_error():
+    with pytest.raises(ValueError):
+        ShoppingList().add_recipe(Recipe("Кекс", []), -1)
+
+def test_remove_recipe():
+    sl = ShoppingList()
+    sl.add_recipe(Recipe("Кекс", [Ingredient("Мука", 200, "г")]), 1)
+    sl.remove_recipe("Кекс")
+    assert len(sl._items) == 0
+
+def test_remove_recipe_not_found():
+    ShoppingList().remove_recipe("Литвин")
+
+def test_get_list_sum():
+    sl = ShoppingList()
+    sl.add_recipe(Recipe("Кекс", [Ingredient("Мука", 200, "г")]), 1)
+    sl.add_recipe(Recipe("Блины", [Ingredient("Мука", 100, "г")]), 1)
+    assert sl.get_list()[0].quantity == 300.0
+
+def test_get_list_sort():
+    sl = ShoppingList()
+    sl.add_recipe(Recipe("Кекс", [Ingredient("Тесто", 100, "г"), Ingredient("Мука", 200, "г")]), 1)
+    result = sl.get_list()
+    assert result[0].name == "Мука"
+    assert result[1].name == "Тесто"
+
+def test_add():
+    sl1 = ShoppingList()
+    sl1.add_recipe(Recipe("Кекс", [Ingredient("Мука", 200, "г")]), 1)
+    sl2 = ShoppingList()
+    sl2.add_recipe(Recipe("Блины", [Ingredient("Яйца", 3, "шт")]), 1)
+    sl3 = sl1 + sl2
+    assert len(sl3._items) == 2
+    assert len(sl1._items) == 1
+    assert len(sl2._items) == 1
